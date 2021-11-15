@@ -10,6 +10,9 @@ generate_key = False # Generate a Bitcoin Cash private key, then exit.
 # ----- Configuration End -----
 
 
+# Method is built on BitcoinPython which has documentation at: https://bitcoinpython.mercier.link
+
+
 # Define the function to clear the screen.
 def clear():
     if name == 'posix': # If OS is Linux or Mac, use the correct command for the platform.
