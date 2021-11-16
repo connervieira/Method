@@ -176,6 +176,7 @@ elif (selection == "2"): # Boot into normal ATM mode.
             print("Here's some quick reference information about this Method instance:")
             print("Minimum purchase amount (USD): $" + "{:.2f}".format(min_purchase))
             print("Maximum purchase amount (USD): $" + "{:.2f}".format(max_purchase))
+            print("Fee: " + fee + "%")
             print("")
             print("")
 
