@@ -6,6 +6,7 @@ import pyqrcode
 
 # ----- Configuration Start -----
 
+demo_mode = True # This value defines whether or not Method will operate in "demo mode", where users can give themselves infinite cash in the ATM interface. For obvious reasons, this should be disabled in production use, but it can be useful when testing the system by avoiding the need to insert physical coins every time.
 private_key = "" # The BitcoinCash wallet key in hex form.
 fee = 0.1 # This is the percentage of the purchase that will be taken as a fee. For example, with a value of 0.1 (or 10%), insterting $1 will result in receiving $0.90 in BitcoinCash.
 max_purchase = 5 # This value defines the maximum purchase size in USD of any individual transaction.
@@ -33,37 +34,47 @@ class style:
     blue = '\033[94m'
     green = '\033[92m'
     yellow = '\033[93m'
+    gray = '\033[1;37m'
     red = '\033[91m'
 
     # Define text decoration
     bold = '\033[1m'
     underline = '\033[4m'
+    italic = '\033[3m'
+    faint = '\033[2m'
 
     # Define styling end marker
     end = '\033[0m'
 
 
 
-clear() # Clear the screen on first launch
+clear() # Clear the screen on first launch.
 
 
-# Load the private key from the configuration
+# Set up the BitcoinCash wallet using the private key.
 if (private_key == ""):
     # If no private key has been set, generate one automatically.
     k = Key()
     print(style.bold + style.yellow + "Warning: No private key has been set. A temporary one has been generated, but this will change on next launch. Before funding the ATM, configure a static private key. Otherwise, you will lose the contents of this wallet if the ATM restarts." + style.end)
-    input("Press enter to continue...")
+    input(style.italic + "Press enter to continue..." + style.end)
     clear()
 else:
     # If a private key has been set, load it.
     k = Key.from_hex(private_key)
 
 
+# Display a warning if demo mode is enabled.
+if (demo_mode == True):
+    print(style.bold + style.yellow + "Warning: Demo mode is enabled. This means that users will be able to give themselves infinite money in the ATM interface. This mode should only be used for testing purposes, and should be disabled when moving to a production environment." + style.end)
+    input(style.italic + "Press enter to continue..." + style.end)
+    clear()
+
+
 # After intial start-up, ask what mode to boot into.
-print("Please choose an option:")
+print(style.bold + "Please choose an option:" + style.end)
 print("1. Admin mode")
 print("2. ATM mode")
-selection = input("Selection: ")
+selection = input(style.underline + "Selection" + style.end + ": ")
 
 if (selection == "1"): # Boot into admin mode.
     clear()
@@ -74,7 +85,7 @@ if (selection == "1"): # Boot into admin mode.
     print("2. View ATM balance")
     print("3. View BCH exchange rate")
     print("4. Generate private key")
-    selection = input("Selection: ")
+    selection = input(style.underline + "Selection" + style.end + ": ")
 
     if (selection == "1"):
         print(k.address)
@@ -122,11 +133,20 @@ elif (selection == "2"): # Boot into normal ATM mode.
         print("Please make a selection.")
         print("1. Start transaction")
         print("2. Learn more")
-        selection = input("Selection: ")
+        selection = input(style.underline + "Selection" + style.end + ": ")
 
         if (selection == "1"): # The user has selected to start a transaction.
             clear()
-            pass
+            print(style.bold + "Please make a selection." + style.end)
+            print("1. Add a coin")
+            print(style.gray + style.faint + "    Select this for all of the coins you want to convert to BitcoinCash." + style.end)
+            print("2. Finalize transaction")
+            print(style.gray + style.faint + "    Select this after you've added all of your coins and want to cash out in BitcoinCash." + style.end)
+            print("3. Cancel transaction")
+            print(style.gray + style.faint + "    Select this if you want to cancel the transaction, and forfeit and coins you've inserted." + style.end)
+            selection = input(style.underline + "Selection" + style.end + ": ")
+
+
         elif (selection == "2"): # The user has selected to learn more about the BitcoinCash ATM.
             clear()
             print("    _   _              _     ___ _ _          _      ___         _    ")
@@ -159,11 +179,11 @@ elif (selection == "2"): # Boot into normal ATM mode.
             print("")
             print("")
 
-            input("Press enter to continue...")
+            input(style.italic + "Press enter to continue..." + style.end)
         else:
             clear()
             print(style.bold + style.red + "Error: Unknown selection" + style.end)
-            input("Press enter to continue...")
+            input(style.italic + "Press enter to continue..." + style.end)
 
 else: # An unknown mode was selected.
     print(style.bold + style.red + "Error: Unknown selection" + style.end)
